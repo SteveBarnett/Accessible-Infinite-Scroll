@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Accessible infinite scroll demo</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+
+  <body>
+    <h1>Accessible Infinite Scroll</h1>
+
+    <p>
+      Here's a very rough proof of concept of using a "Load more" and a little
+      ARIA magic to make an accessible alternative to an infinite scroll (and
+      something that's a bit simpler and more widely understood than
+      <code>role="feed"</code>
+    </p>
+
+    <p aria-live="polite" role="status" aria-atomic="true">
+      Showing <span id="list-count">3</span> articles
+    </p>
+
+    <ul id="articles">
+      <li><a href="/">Article 1</a></li>
+      <li><a href="/">Article 2</a></li>
+      <li><a href="/">Article 3</a></li>
+    </ul>
+
+    <button type="button" id="load-more">Load 3 more articles</button>
+
+    <script>
+      const articles = document.getElementById("articles");
+      const loadMore = document.getElementById("load-more");
+
+      loadMore.addEventListener("click", function () {
+        const listCount = document.getElementById("list-count");
+        const currentListCount = Number(listCount.innerText);
+        console.log("currentListCount", currentListCount);
+        const fakeExtraArticles = `
+        <li><a href="/">Article ${currentListCount + 1}</a></li>
+        <li><a href="/">Article ${currentListCount + 2}</a></li>
+        <li><a href="/">Article ${currentListCount + 3}</a></li>
+        `;
+
+        articles.innerHTML += fakeExtraArticles;
+        listCount.innerText = currentListCount + 3;
+        articles
+          .querySelector("li:nth-child(" + (currentListCount + 1) + ") a")
+          .focus();
+      });
+    </script>
+  </body>
+</html>
